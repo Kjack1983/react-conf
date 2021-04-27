@@ -48,22 +48,25 @@ const MenuComponent = () => {
     const [dishes, setDishes] = useState(obj || []);
 
     const constructMenu = () => {
-        return dishes.map(dish => (
-                <div className="col-12 mt-4">
-                    <Media tag="li">
-                        <Media left middle>
-                            <Media object src={dish.image} alt={dish.name} />
-                        </Media>
-                        <Media body className="ml-5">
-                            <Media heading>
-                                {dish.name}
+        return Array.isArray(dishes) ? 
+            dishes.map(dish => (
+                    <div className="col-12 mt-4">
+                        <Media tag="li">
+                            <Media left middle>
+                                <Media object src={dish.image} alt={dish.name} />
                             </Media>
-                            <p>{dish.description}</p>
+                            <Media body className="ml-5">
+                                <Media heading>
+                                    {dish.name}
+                                </Media>
+                                <p>{dish.description}</p>
+                            </Media>
                         </Media>
-                    </Media>
-                </div>
+                    </div>
+                )
+            ) : (
+                <div>No dishes</div>
             )
-        )
     }
     
     return ( 
