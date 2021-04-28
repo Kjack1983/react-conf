@@ -1,83 +1,140 @@
-import React, {
-    useState
-} from 'react';
+import React, {useState} from 'react';
 import {
-    Media
+    Card,
+    CardImg,
+    CardImgOverlay,
+    CardTitle
 } from 'reactstrap';
+import { DishdetailComponent } from './DishdetailComponent';
 
-const MenuComponent = () => {
+const MenuComponent = ({
+    dishes
+}) => {
 
-    let obj = [{
-            id: 0,
-            name: 'Uthappizza',
-            image: 'assets/images/uthappizza.png',
-            category: 'mains',
-            label: 'Hot',
-            price: '4.99',
-            description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.'
-        },
-        {
-            id: 1,
-            name: 'Zucchipakoda',
-            image: 'assets/images/zucchipakoda.png',
-            category: 'appetizer',
-            label: '',
-            price: '1.99',
-            description: 'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce'
-        },
-        {
-            id: 2,
-            name: 'Vadonut',
-            image: 'assets/images/vadonut.png',
-            category: 'appetizer',
-            label: 'New',
-            price: '1.99',
-            description: 'A quintessential ConFusion experience, is it a vada or is it a donut?'
-        },
-        {
-            id: 3,
-            name: 'ElaiCheese Cake',
-            image: 'assets/images/elaicheesecake.png',
-            category: 'dessert',
-            label: '',
-            price: '2.99',
-            description: 'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms'
-        }
-    ]
+    let [selectedDish, setSelectedDish] = useState(null);
 
-    const [dishes, setDishes] = useState(obj || []);
+    const onDishSelect = (dish) => {
+        setSelectedDish(dish);
+    }
 
     const constructMenu = () => {
-        return Array.isArray(dishes) ? 
+        return Array.isArray(dishes) && dishes.length ? 
             dishes.map(dish => (
-                    <div className="col-12 mt-4">
-                        <Media tag="li">
-                            <Media left middle>
-                                <Media object src={dish.image} alt={dish.name} />
-                            </Media>
-                            <Media body className="ml-5">
-                                <Media heading>
+                    <div className="col-12 col-md-5 m-1">
+                        <Card key={dish.id} onClick={() => 
+                            onDishSelect(dish)
+                        }>
+                            <CardImg width="100%" object src={dish.image} alt={dish.name} />
+                            <CardImgOverlay>
+                                <CardTitle>
                                     {dish.name}
-                                </Media>
-                                <p>{dish.description}</p>
-                            </Media>
-                        </Media>
+                                </CardTitle>
+                            </CardImgOverlay>
+                        </Card>
                     </div>
                 )
             ) : (
-                <div>No dishes</div>
+                <div></div>
             )
     }
     
     return ( 
         <div className = "container" >
             <div className = "row" >
-                <Media list >
-                    {constructMenu()}
-                </Media>
-            </div> 
+                {constructMenu()}
+            </div>
+            <div className="row">
+                <DishdetailComponent
+                    dish={selectedDish}
+                />
+            </div>
         </div>
     )
 }
+
+/* class MenuComponent extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selectedDish: null,
+            width: window.innerWidth
+        }
+
+        this.onDishSelect = this.onDishSelect.bind(this);
+        this.handleWidthChange = this.handleWidthChange.bind(this);
+    }
+
+    componentDidMount() {
+        console.log('Menu componentDidMount is invoked'); 
+        window.addEventListener('resize', this.handleWidthChange);
+    }
+
+    componentWillUnmount() {
+        console.log('Menu componentDidMount is invoked');
+        window.removeEventListener('resize', this.handleWidthChange);
+    }
+
+    onDishSelect(dish) {
+        this.setState({ 
+            selectedDish: dish
+        });
+    }
+
+    handleWidthChange() {
+        this.setState({
+            width: window.innerWidth 
+        })
+    }
+
+    renderDish(dish) {
+        if (dish != null)
+            return(
+                <Card>
+                    <CardImg top src={dish.image} alt={dish.name} />
+                    <CardBody>
+                      <CardTitle>{dish.name}</CardTitle>
+                      <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            );
+        else
+            return(
+                <div></div>
+            );
+    }
+
+    render() {
+        const menu = this.props.dishes.map((dish) => {
+            return (
+              <div  className="col-12 col-md-5 m-1">
+                <Card key={dish.id}
+                  onClick={() => this.onDishSelect(dish)}>
+                  <CardImg width="100%" src={dish.image} alt={dish.name} />
+                  <CardImgOverlay>
+                      <CardTitle>{dish.name}</CardTitle>
+                  </CardImgOverlay>
+                </Card>
+              </div>
+            );
+        });
+
+        return (
+            <div className="container">
+                <div className="row">
+                    {menu}
+                </div>
+                <div className="row">
+                    <DishdetailComponent renderSelectedDish={this.renderDish(this.state.selectedDish)}/>
+                </div>
+                <div className="row">
+                    {this.state.width}
+                </div>
+            </div>
+        );
+    }
+} */
+ 
 
 export default MenuComponent;
