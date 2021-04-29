@@ -5,7 +5,6 @@ import {
     CardText,
     CardBody,
     CardTitle,
-    Media,
     ListGroupItem,
     ListGroup
 } from 'reactstrap';
@@ -37,7 +36,8 @@ export const DishdetailComponent = ({ dish }) => {
      * @param {string} date 
      */
     const formatDate = (date) => {
-        return moment(date).format('LL');
+        //return moment(date).format('LL');
+        return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
     }
 
     /**
