@@ -1,10 +1,12 @@
 
 import React, {useState, useEffect} from 'react';
+import Home from './HomeComponent';
 import Header from './HeaderComponent';
 import Footer from './footerComponent';
 import MenuComponent from './MenuComponent';
 import { DishdetailComponent } from './DishdetailComponent';
 import { DISHES } from '../shared/dishes';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 const useDishes = () => {
     const [value, setValue] = useState(DISHES || null);
@@ -33,21 +35,34 @@ const MainComponent = () => {
         console.log('render the useEffect hook');
     }, [])
 
-    const fetchSelectedDish = () => (
+    /* const fetchSelectedDish = () => (
         Array.isArray(dishes) && dishes.length && dishes.filter(dish => dish.id === selectedDish.value)[0]
-    )
+    ) */
+
+    const HomePage = () => {
+        return (
+            <Home />
+        )
+    }
 
     return (
         <>
             <Header/>
             <div className="container">
-                <MenuComponent 
+                {/* <MenuComponent 
                     dishes={dishes} 
                     onClick={(dishId) => selectedDish.onClick(dishId)}
                 />
-                <DishdetailComponent dish={fetchSelectedDish()}/>
-                <Footer />
+                <DishdetailComponent dish={fetchSelectedDish()}/> */}
+                <Switch>
+                    <Route path="/home" component={HomePage} />
+                    <Route exact path="/menu" component={(dishId) => <MenuComponent 
+                        dishes={dishes} />} 
+                    />}/>
+                    <Redirect to="/home" />
+                </Switch>
             </div>
+            <Footer />
         </>
     )
 }
