@@ -14,8 +14,8 @@ const MenuComponent = ({
     const constructMenu = () => {
         return Array.isArray(dishes) && dishes.length ? 
             dishes.map(dish => (
-                    <div className="col-12 col-md-5 m-1">
-                        <Card key={dish.id} onClick={() => 
+                    <div key={dish.id} className="col-12 col-md-5 m-1">
+                        <Card onClick={() => 
                             onClick(dish.id)
                         }>
                             <CardImg width="100%" object src={dish.image} alt={dish.name} />
@@ -41,12 +41,9 @@ const MenuComponent = ({
     )
 }
 
+export default MenuComponent;
+
 /* class MenuComponent extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         console.log('Menu componentDidMount is invoked'); 
     }
@@ -56,11 +53,13 @@ const MenuComponent = ({
     }
 
     render() {
-        const menu = this.props.dishes.map((dish) => {
+
+        console.log('Menu component render is invoked');
+
+        const menu = this.props.dishes.map(dish => {
             return (
-              <div  className="col-12 col-md-5 m-1">
-                <Card key={dish.id}
-                  onClick={() => this.props.onClick(dish.id)}>
+              <div key={dish.id} className="col-12 col-md-5 m-1">
+                <Card onClick={() => this.props.onClick(dish.id)}>
                   <CardImg width="100%" src={dish.image} alt={dish.name} />
                   <CardImgOverlay>
                       <CardTitle>{dish.name}</CardTitle>
@@ -78,7 +77,5 @@ const MenuComponent = ({
             </div>
         );
     }
-} */
- 
-
-export default MenuComponent;
+}
+*/

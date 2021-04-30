@@ -1,25 +1,16 @@
 
 import React, {useState, useEffect} from 'react';
-import { Navbar, NavbarBrand } from  'reactstrap';
+import Header from './HeaderComponent';
+import Footer from './footerComponent';
 import MenuComponent from './MenuComponent';
 import { DishdetailComponent } from './DishdetailComponent';
 import { DISHES } from '../shared/dishes';
 
-/**
- * Set dishes into state make use of custom hooks.
- * @return {array} value
- */
 const useDishes = () => {
     const [value, setValue] = useState(DISHES || null);
     return value;
 }
 
-/**
- * custom hook to set specific dish.
- * 
- * @param {string} dishId
- * @return {object} {value, function}
- */
 const useSelectedDish = (dishId) => {
     let [value, setValue] = useState(dishId || null);
 
@@ -33,7 +24,7 @@ const useSelectedDish = (dishId) => {
     }
 }
 
-export default function MainComponent () {
+const MainComponent = () => {
    
     let dishes = useDishes();
     let selectedDish = useSelectedDish(null);
@@ -42,30 +33,22 @@ export default function MainComponent () {
         console.log('render the useEffect hook');
     }, [])
 
-    /**
-     * Fetches a selected dish.
-     */
     const fetchSelectedDish = () => (
         Array.isArray(dishes) && dishes.length && dishes.filter(dish => dish.id === selectedDish.value)[0]
     )
 
     return (
-        <div className="container">
-            <Navbar dark color="primary">
-                <div className="container">
-                <NavbarBrand href="/">
-                    Ristorante Con Fusion
-                </NavbarBrand>
-                </div>
-            </Navbar>
-            <MenuComponent 
-                dishes={dishes} 
-                onClick={(dishId) => selectedDish.onClick(dishId)}
-            />
-            <div className="row">
+        <>
+            <Header/>
+            <div className="container">
+                <MenuComponent 
+                    dishes={dishes} 
+                    onClick={(dishId) => selectedDish.onClick(dishId)}
+                />
                 <DishdetailComponent dish={fetchSelectedDish()}/>
+                <Footer />
             </div>
-        </div>
+        </>
     )
 }
 
@@ -93,6 +76,12 @@ export default function MainComponent () {
         console.log('Menu componentDidMount is invoked');
     }
 
+    onDishSelect(dish) {
+        this.setState({
+            selectedDish: dish
+        })
+    }
+
     render() {
         return (
             <div className="container">
@@ -113,6 +102,6 @@ export default function MainComponent () {
             </div>
         );
     }
-}
+} */
 
-export default MainComponent; */
+export default MainComponent;

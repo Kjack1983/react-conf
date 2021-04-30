@@ -10,47 +10,51 @@ import {
 } from 'reactstrap';
 import moment from 'moment';
 
-export const DishdetailComponent = ({ dish }) => {
+/* export class DishdetailComponent extends React.Component {
+    
+    constructor(props) {
+        super(props);
+        this.renderDish = this.renderDish.bind(this);
+        this.formatDate = this.formatDate.bind(this);
+        this.renderComments = this.renderComments.bind(this);
 
-    let comments = dish ? dish.comments : [];
+    }
 
-    /**
-     * Render dish.
-     */
-    const renderDish = () => {
+    componentDidMount() {
+        console.log('DishDetail Component componentDidMount is invoked');
+    }
+
+    componentDidUpdate() {
+        console.log('DishDetail Component componentDidUpdate is invoked');
+    }
+
+    renderDish(dish) {
         return dish ? (
-                <Card key={dish.key}>
-                    <CardImg top src={dish.image} alt={dish.name} />
-                    <CardBody>
-                        <CardTitle>{dish.name}</CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
-                </Card>
+            <Card key={dish.key}>
+                <CardImg top src={dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
         ) : (
             <div>No dishes selected</div>
         );
     }
 
-    /**
-     * Format date. 
-     * @param {string} date 
-     */
-    const formatDate = (date) => {
+    formatDate(date){
         //return moment(date).format('LL');
         return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
     }
 
-    /**
-     * 
-     * @param {Array} comments 
-     */
-    const renderComments = (comments) => {
+
+    renderComments(comments) {
         return comments && comments.length ? 
             comments.map(dishComment => (
                 <ListGroupItem className="borderless"
                     key={dishComment.key}>
                         <p>{dishComment.comment}</p>
-                        <p>-- {dishComment.author}, {formatDate(dishComment.date)}</p> 
+                        <p>-- {dishComment.author}, {this.formatDate(dishComment.date)}</p> 
                 </ListGroupItem>
             )
             ) : (
@@ -58,17 +62,80 @@ export const DishdetailComponent = ({ dish }) => {
             )
     }
 
+    render() {
+        let comments = this.props.dish ? this.props.dish.comments : [];
+        console.log('DishDetail Component render is invoked');
+
+        return (
+            <React.Fragment>
+                <div className="col-12 col-md-5 m-1">
+                    {this.renderDish(this.props.dish)}
+                </div>
+                <div className="col-12 col-md-5 m-1">
+                    <h4>Comments</h4>
+                    <ListGroup as="li" className="list-unstyled">
+                        {this.renderComments(comments)}
+                    </ListGroup>
+                </div>
+            </React.Fragment>
+        )
+    }
+
+} */
+/**
+ * Similarly can be successfully be implemented with functional components.
+ */
+
+const RenderDish = ({dish}) => {
+    return dish ? (
+            <Card key={dish.key}>
+                <CardImg top src={dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
+    ) : (
+        <div>No dishes selected</div>
+    );
+}
+
+const RenderComments = ({comments}) => {
+
+    const formatDate = (date) => {
+        //return moment(date).format('LL');
+        return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
+    }
+
+    return comments && comments.length ? 
+        comments.map(dishComment => (
+            <ListGroupItem className="borderless"
+                key={dishComment.key}>
+                    <p>{dishComment.comment}</p>
+                    <p>-- {dishComment.author}, {formatDate(dishComment.date)}</p> 
+            </ListGroupItem>
+        )
+        ) : (
+            <div>No Comments</div>
+        )
+}
+
+
+export const DishdetailComponent = ({ dish }) => {
+
+    let comments = dish ? dish.comments : [];
+
     return (
-        <React.Fragment>
+        <div className="row">
             <div className="col-12 col-md-5 m-1">
-                {renderDish()}
+                <RenderDish dish={dish} />
             </div>
             <div className="col-12 col-md-5 m-1">
                 <h4>Comments</h4>
                 <ListGroup as="li" className="list-unstyled">
-                    {renderComments(comments)}
+                    <RenderComments comments={comments} />
                 </ListGroup>
             </div>
-        </React.Fragment>
+        </div>
     )
 }
