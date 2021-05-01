@@ -3,13 +3,14 @@ import React, {useState, useEffect} from 'react';
 import Home from './HomeComponent';
 import Header from './HeaderComponent';
 import Footer from './footerComponent';
+import Contact from './ContactComponent';
 import MenuComponent from './MenuComponent';
 import { DishdetailComponent } from './DishdetailComponent';
-import { DISHES } from '../shared/dishes';
+import { DISHES, COMMENTS, LEADERS, PROMOTIONS} from '../shared/dishes';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-const useDishes = () => {
-    const [value, setValue] = useState(DISHES || null);
+const useData = (data) => {
+    const [value, setValue] = useState(data || null);
     return value;
 }
 
@@ -28,20 +29,27 @@ const useSelectedDish = (dishId) => {
 
 const MainComponent = () => {
    
-    let dishes = useDishes();
+    let dishes = useData(DISHES);
+    let comments = useData(COMMENTS);
+    let leaders = useData(LEADERS);
+    let promotions = useData(PROMOTIONS);
     let selectedDish = useSelectedDish(null);
 
     useEffect(() => {
         console.log('render the useEffect hook');
     }, [])
 
-    /* const fetchSelectedDish = () => (
+    const fetchSelectedDish = () => (
         Array.isArray(dishes) && dishes.length && dishes.filter(dish => dish.id === selectedDish.value)[0]
-    ) */
+    )
 
     const HomePage = () => {
         return (
-            <Home />
+            <Home 
+                dish={dishes.filter(dish => dish.featured)[0]} 
+                promotion={promotions.filter(promotion => promotion.featured)[0]}
+                leader={leaders.filter(leader => leader.featured)[0]}
+            />
         )
     }
 
@@ -59,6 +67,7 @@ const MainComponent = () => {
                     <Route exact path="/menu" component={(dishId) => <MenuComponent 
                         dishes={dishes} />} 
                     />}/>
+                    <Route path="/contactus" component={Contact} />
                     <Redirect to="/home" />
                 </Switch>
             </div>
