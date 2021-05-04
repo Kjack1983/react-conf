@@ -21,7 +21,7 @@ export default function HeaderComponent() {
 
     return (
         <>
-            <Navbar dark expand="md">
+            <Navbar dark expand="md" fixed="top">
                 <div className="container">
                 <NavbarToggler onClick={toggleNav}></NavbarToggler>
                 <NavbarBrand className="mr-auto" href="/">

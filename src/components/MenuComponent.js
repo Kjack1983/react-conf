@@ -1,10 +1,28 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Card,
     CardImg,
     CardImgOverlay,
-    CardTitle
+    CardTitle,
+    Breadcrumb,
+    BreadcrumbItem
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
+
+const RenderItem = ({dish}) => {
+    return (
+        <Card>
+            <Link to={`/menu/${dish.id}`}>
+                <CardImg width="100%" object src={dish.image} alt={dish.name} />
+                <CardImgOverlay>
+                    <CardTitle>
+                        {dish.name}
+                    </CardTitle>
+                </CardImgOverlay>
+            </Link>
+        </Card>
+    )
+}
 
 const MenuComponent = ({
     dishes,
@@ -15,16 +33,7 @@ const MenuComponent = ({
         return Array.isArray(dishes) && dishes.length ? 
             dishes.map(dish => (
                     <div key={dish.id} className="col-12 col-md-5 m-1">
-                        <Card onClick={() => 
-                            onClick(dish.id)
-                        }>
-                            <CardImg width="100%" object src={dish.image} alt={dish.name} />
-                            <CardImgOverlay>
-                                <CardTitle>
-                                    {dish.name}
-                                </CardTitle>
-                            </CardImgOverlay>
-                        </Card>
+                        <RenderItem dish={dish} onClick={onClick} />
                     </div>
                 )
             ) : (
@@ -34,6 +43,21 @@ const MenuComponent = ({
     
     return ( 
         <div className="container">
+            <div className="row">
+                <Breadcrumb>
+                    <BreadcrumbItem>
+                        <Link to="/home">
+                            Home
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem active>
+                        Menu
+                    </BreadcrumbItem>
+                </Breadcrumb>
+                <div className="col-12 border-bottom">
+                    <h3>Menu</h3>
+                </div>
+            </div>
             <div className="row">
                 {constructMenu()}
             </div>

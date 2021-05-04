@@ -53,20 +53,25 @@ const MainComponent = () => {
         )
     }
 
+    const dishWithId = ({match}) => {
+        return  (
+        <DishdetailComponent 
+            dish={dishes.filter(dish => dish.id === parseInt(match.params.dishId, 10))[0]} 
+            comments={comments.filter(comment => comment.dishId === parseInt(match.params.dishId, 10))}
+        />)
+    }
+    
+
     return (
         <>
             <Header/>
             <div className="container">
-                {/* <MenuComponent 
-                    dishes={dishes} 
-                    onClick={(dishId) => selectedDish.onClick(dishId)}
-                />
-                <DishdetailComponent dish={fetchSelectedDish()}/> */}
                 <Switch>
                     <Route path="/home" component={HomePage} />
                     <Route exact path="/menu" component={(dishId) => <MenuComponent 
                         dishes={dishes} />} 
                     />}/>
+                    <Route path="/menu/:dishId" component={dishWithId} />
                     <Route path="/contactus" component={Contact} />
                     <Redirect to="/home" />
                 </Switch>

@@ -6,9 +6,12 @@ import {
     CardBody,
     CardTitle,
     ListGroupItem,
-    ListGroup
+    ListGroup,
+    Breadcrumb,
+    BreadcrumbItem
 } from 'reactstrap';
 import moment from 'moment';
+import {Link} from 'react-router-dom';
 
 /**
  * Similarly can be successfully be implemented with functional components.
@@ -30,6 +33,8 @@ const RenderDish = ({dish}) => {
 
 const RenderComments = ({comments}) => {
 
+    console.log('comments inside RenderComments :>> ', comments);
+
     const formatDate = (date) => {
         //return moment(date).format('LL');
         return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
@@ -49,21 +54,44 @@ const RenderComments = ({comments}) => {
 }
 
 
-export const DishdetailComponent = ({ dish }) => {
+export const DishdetailComponent = ({ 
+    dish, 
+    comments 
+}) => {
 
-    let comments = dish ? dish.comments : [];
+    console.log('comments :>> ', comments);
 
     return (
-        <div className="row">
-            <div className="col-12 col-md-5 m-1">
-                <RenderDish dish={dish} />
+        <React.Fragment>
+            <div className="row">
+                <Breadcrumb>
+                    <BreadcrumbItem>
+                        <Link to="/menu">
+                            menu
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem active>
+                        {dish ? dish.name : ''}
+                    </BreadcrumbItem>
+                </Breadcrumb>
+                <div className="col-12 border-bottom">
+                    {dish ? 
+                        <h3>{dish.name}</h3> : 
+                        <h3>No Dish Name</h3>
+                    }
+                </div>
             </div>
-            <div className="col-12 col-md-5 m-1">
-                <h4>Comments</h4>
-                <ListGroup as="li" className="list-unstyled">
-                    <RenderComments comments={comments} />
-                </ListGroup>
+            <div className="row">
+                <div className="col-12 col-md-5 m-1">
+                    <RenderDish dish={dish} />
+                </div>
+                <div className="col-12 col-md-5 m-1">
+                    <h4>Comments</h4>
+                    <ListGroup as="li" className="list-unstyled">
+                        <RenderComments comments={comments} />
+                    </ListGroup>
+                </div>
             </div>
-        </div>
+        </React.Fragment>
     )
 }
