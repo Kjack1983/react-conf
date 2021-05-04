@@ -6,8 +6,10 @@ import Footer from './footerComponent';
 import Contact from './ContactComponent';
 import MenuComponent from './MenuComponent';
 import { DishdetailComponent } from './DishdetailComponent';
+import AboutComponent from './AboutComponent';
 import { DISHES, COMMENTS, LEADERS, PROMOTIONS} from '../shared/dishes';
 import { Switch, Route, Redirect } from 'react-router-dom';
+
 
 const useData = (data) => {
     const [value, setValue] = useState(data || null);
@@ -68,6 +70,7 @@ const MainComponent = () => {
             <div className="container">
                 <Switch>
                     <Route path="/home" component={HomePage} />
+                    <Route path="/aboutus" component={() => <AboutComponent leaders={leaders}/>} />
                     <Route exact path="/menu" component={(dishId) => <MenuComponent 
                         dishes={dishes} />} 
                     />}/>
