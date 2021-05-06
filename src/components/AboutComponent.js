@@ -2,12 +2,23 @@ import React from 'react'
 import { Card, CardHeader, CardBody, Media, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-export default function AboutComponent({ 
+const RenderLeader = ({leader}) => {
+    return (
+        <Media tag="li" className="mb-5 mt-2">
+            <Media className="align-self-start mr-5" object src={leader.image} alt={leader.name}/>
+            <Media body>
+            <Media heading>{leader.name}</Media>
+            <p>{leader.designation}</p>
+                {leader.description}
+            </Media>
+        </Media>
+      );
+}
+
+export default function AboutComponent({
     leaders
 }) {
-
-    console.log('leaders :>> ', leaders);
-    
+    console.log(leaders);
     return (
         <div className="container">
             <div className="row">
@@ -63,8 +74,8 @@ export default function AboutComponent({
                     <h2>Corporate Leadership</h2>
                 </div>
                 <div className="col-12">
-                    <Media list>
-                        {leaders.map(leader => <p>{leader.name}</p>)}
+                    <Media list className="list-unstyled">
+                        {leaders.map(leader => <RenderLeader leader={leader} />)}
                     </Media>
                 </div>
             </div>
