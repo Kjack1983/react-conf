@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col} from 'reactstrap'
+import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col, FormFeedback} from 'reactstrap'
 import {Link} from 'react-router-dom';
 
 /**
@@ -9,6 +9,13 @@ import {Link} from 'react-router-dom';
  */
 const useFormValue = callback => {
     const [inputs, setInputs] = useState({});
+
+    const [errors, setErrors] = useState({
+        firstname: false,
+        lastname: false,
+        telnum: false,
+        email: false
+    })
 
     const handleSubmit = (event) => {
         if (event) {
@@ -34,10 +41,46 @@ const useFormValue = callback => {
         setInputs(inputs => ({...inputs, [name]: value}));
     }
 
+    const handleBlur = field => event => {
+        setErrors({...errors, [field]: true})
+    }
+
+    const validate = (firstname, lastname, telnum, email) => {
+        const validateErrors = {
+            firstname: '',
+            lastname: '',
+            telnum: '',
+            email: ''
+        }
+
+        if(errors.firstname && firstname.length < 3)
+            validateErrors.firstname = "Firstname should be >= 3 characters";
+        else if (errors.firstname && firstname.length > 10)
+            validateErrors.firstname = "Firstname should be <= 10 characters";
+
+        if(errors.lastname && lastname.length < 3)
+            validateErrors.lastname = "Lastname should be >= 3 characters";
+        else if (errors.lastname && lastname.length > 10)
+            validateErrors.lastname = "Lastname should be <= 10 characters";
+
+        const pattern = /^\d+$/;
+
+        if(errors.telnum && !pattern.test(telnum))
+            validateErrors.telnum = "Tel. Number should contain only numbers";
+
+        if(errors.email && email.split('').filter(x => x === "@").length !== 1)
+            validateErrors.email = "Please provide a valid email";
+
+        return validateErrors;
+    }
+
     return {
         handleSubmit,
         handleInputChange,
-        inputs
+        inputs,
+        errors,
+        handleBlur,
+        validate
     };
 }
 
@@ -53,7 +96,20 @@ export default function ContactComponent (props) {
                Email: ${inputs.email}`);
       }
 
-    let { inputs, handleInputChange,  handleSubmit } = useFormValue(displayForm);
+    const initialValues = {
+        firstname: '',
+        lastname: '',
+        telnum: '',
+        email: '',
+        agree: false,
+        contactType: '',
+        message: '',
+    }
+
+    let { inputs, errors, handleInputChange,  handleSubmit, handleBlur, validate } = useFormValue(displayForm);
+
+    // @todo check other ways to provide the input field state with initial value. 
+    const validationErrors = validate(inputs.firstname || '', inputs.lastname || '', inputs.telnum || '', inputs.email || '');
 
     return (
         <div className="container">
@@ -107,25 +163,68 @@ export default function ContactComponent (props) {
                         <FormGroup row>
                             <Label htmlFor="firstname" md={2}>First Name:</Label>
                             <Col md={9}>
-                                <Input type="text" id="firstname" name="firstname" placeholder="First Name" value={inputs.firstname} onChange={handleInputChange}/>
+                                <Input 
+                                    type="text" 
+                                    id="firstname" 
+                                    name="firstname" 
+                                    placeholder="First Name"
+                                    value={inputs.firstname}
+                                    valid={validationErrors.firstname === ''}
+                                    invalid={validationErrors.firstname !== ''}
+                                    onBlur={handleBlur('firstname')}
+                                    onChange={handleInputChange}
+                                />
+                                <FormFeedback>{validationErrors.firstname}</FormFeedback>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Label htmlFor="firstname" md={2}>Last Name:</Label>
                             <Col md={9}>
-                                <Input type="text" id="lastname" name="lastname" placeholder="Last Name" value={inputs.lastname} onChange={handleInputChange}/>
+                                <Input 
+                                    type="text" 
+                                    id="lastname" 
+                                    name="lastname" 
+                                    placeholder="Last Name" 
+                                    value={inputs.lastname}
+                                    valid={validationErrors.lastname === ''}
+                                    invalid={validationErrors.lastname !== ''}
+                                    onBlur={handleBlur('lastname')}
+                                    onChange={handleInputChange}
+                                />
+                                <FormFeedback>{validationErrors.lastname}</FormFeedback>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Label htmlFor="telnum" md={2}>Tel. Number:</Label>
                             <Col md={9}>
-                                <Input type="tel" id="telnum" name="telnum" placeholder="Tel. Number" value={inputs.telnum} onChange={handleInputChange}/>
+                                <Input 
+                                    type="tel" 
+                                    id="telnum" 
+                                    name="telnum" 
+                                    placeholder="Tel. Number" 
+                                    value={inputs.telnum}
+                                    valid={validationErrors.telnum === ''}
+                                    invalid={validationErrors.telnum !== ''}
+                                    onBlur={handleBlur('telnum')}
+                                    onChange={handleInputChange}/>
+                                <FormFeedback>{validationErrors.telnum}</FormFeedback>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Label htmlFor="email" md={2}>Email:</Label>
                             <Col md={9}>
-                                <Input type="email" id="email" name="email" placeholder="Email" value={inputs.email} onChange={handleInputChange}/>
+                                <Input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="Email" 
+                                    value={inputs.email}
+                                    valid={validationErrors.email === ''}
+                                    invalid={validationErrors.email !== ''}
+                                    onBlur={handleBlur('email')}
+                                    onChange={handleInputChange}
+                                />
+                                <FormFeedback>{validationErrors.email}</FormFeedback>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
