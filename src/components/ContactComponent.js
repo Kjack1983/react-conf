@@ -8,7 +8,15 @@ import {Link} from 'react-router-dom';
  * @return {object} 
  */
 const useFormValue = callback => {
-    const [inputs, setInputs] = useState({});
+    const [inputs, setInputs] = useState({
+        firstname: '',
+        lastname: '',
+        telnum: '',
+        email: '',
+        agree: false,
+        contactType: 'Tel.',
+        message: ''
+    });
 
     const [errors, setErrors] = useState({
         firstname: false,
@@ -65,9 +73,12 @@ const useFormValue = callback => {
 
         const pattern = /^\d+$/;
 
-        if(errors.telnum && !pattern.test(telnum))
+        if(errors.telnum && !pattern.test(telnum)) {
             validateErrors.telnum = "Tel. Number should contain only numbers";
-
+            if(telnum.length < 6)
+                validateErrors.telnum = "Tel. Number should contain at least 6 numbers";
+        }
+        
         if(errors.email && email.split('').filter(x => x === "@").length !== 1)
             validateErrors.email = "Please provide a valid email";
 
@@ -96,20 +107,10 @@ export default function ContactComponent (props) {
                Email: ${inputs.email}`);
       }
 
-    const initialValues = {
-        firstname: '',
-        lastname: '',
-        telnum: '',
-        email: '',
-        agree: false,
-        contactType: '',
-        message: '',
-    }
-
     let { inputs, errors, handleInputChange,  handleSubmit, handleBlur, validate } = useFormValue(displayForm);
 
     // @todo check other ways to provide the input field state with initial value. 
-    const validationErrors = validate(inputs.firstname || '', inputs.lastname || '', inputs.telnum || '', inputs.email || '');
+    const validationErrors = validate(inputs.firstname, inputs.lastname, inputs.telnum, inputs.email);
 
     return (
         <div className="container">

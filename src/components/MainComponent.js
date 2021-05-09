@@ -7,22 +7,34 @@ import Contact from './ContactComponent';
 import MenuComponent from './MenuComponent';
 import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
-import { DISHES, COMMENTS, LEADERS, PROMOTIONS} from '../shared/dishes';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 
+const mapStateToProps = state => {
+    return {
+        dishes: state.dishes,
+        comments: state.comments,
+        leaders: state.leaders,
+        promotions: state.promotions
+    }
+}
+
+/**
+ * Used for previously setting our initial state.
+ * @param {object} data 
+ */
 const useData = (data) => {
     const [value, setValue] = useState(data || null);
     return value;
 }
 
-const MainComponent = () => {
-   
-    let dishes = useData(DISHES);
-    let comments = useData(COMMENTS);
-    let leaders = useData(LEADERS);
-    let promotions = useData(PROMOTIONS);
-
+const MainComponent = ({
+    dishes,
+    comments,
+    leaders,
+    promotions
+}) => {
     useEffect(() => {
         console.log('render the useEffect hook');
     }, []);
@@ -66,4 +78,4 @@ const MainComponent = () => {
     )
 }
 
-export default MainComponent;
+export default withRouter(connect(mapStateToProps)(MainComponent));
