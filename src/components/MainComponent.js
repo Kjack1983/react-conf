@@ -21,7 +21,7 @@ const mapStateToProps = state => {
 }
 
 /**
- * Used for previously setting our initial state.
+ * Custom hook for previously setting our initial state.
  * @param {object} data 
  */
 const useData = (data) => {
