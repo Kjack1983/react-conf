@@ -26,18 +26,22 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
  * 
  * @param {function} callback 
  */
-const useFormHandle = () => {
+const useFormHandle = (dishId, addComment) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = () => {
         setIsModalOpen(setIsModalOpen => !setIsModalOpen);
     }
 
-    const handleComment = (values, callback) => {
+    // @todo check why is not working.
+    const handleComment = (values) => {
         setIsModalOpen(setIsModalOpen => !setIsModalOpen);
-        if(typeof callback === 'function') {
-            callback();
-        }
+
+        console.log('values.rating :>> ', values.rating);
+        console.log('values.author :>> ', values.author);
+        console.log('values.comment :>> ', values.comment);
+
+        addComment(dishId, values.rating, values.author, values.comment)
     }
 
     const required = (val) => {
@@ -64,7 +68,10 @@ const useFormHandle = () => {
 /**
  * Taking advantage hooks and functional components.
  */
-export default function CommentForm() {
+export default function CommentForm({
+    dishId,
+    addComment
+}) {
 
     let { 
         required, 
@@ -73,18 +80,15 @@ export default function CommentForm() {
         isModalOpen, 
         toggleModal, 
         handleComment 
-    } = useFormHandle();
+    } = useFormHandle(dishId, addComment);
 
-    const displayAlert = values => {
-        alert('current state is >>>' + JSON.stringify(values));
-    }
 
     return (
         <div>
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
                 <ModalHeader toggle={toggleModal}>Submit Comment</ModalHeader>
                 <ModalBody>
-                <LocalForm onSubmit={(values) => handleComment(values, displayAlert(values))}>
+                <LocalForm onSubmit={(values) => handleComment(values)}>
                         <Row>
                             <Col>
                                 <Label htmlFor="rating">Rating:</Label>
@@ -186,20 +190,28 @@ const RenderDish = ({dish}) => {
     );
 }
 
-const RenderComments = ({comments}) => {
+const RenderComments = ({comments, addComment, dishId}) => {
 
     const formatDate = (date) => {
         return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
     }
 
-    return comments && comments.length ? 
-        comments.map(dishComment => (
-            <ListGroupItem className="borderless"
-                key={dishComment.key}>
-                    <p>{dishComment.comment}</p>
-                    <p>-- {dishComment.author}, {formatDate(dishComment.date)}</p> 
-            </ListGroupItem>
-        )
+    return comments !== null  ? ( 
+        <div className="col-12 col-md-5 m-1">
+            <h4>Comments</h4>
+            <ListGroup as="li" className="list-unstyled">
+                {comments.map(dishComment => {
+                    return (
+                        <ListGroupItem className="borderless"
+                            key={dishComment.key}>
+                            <p>{dishComment.comment}</p>
+                            <p>-- {dishComment.author}, {formatDate(dishComment.date)}</p> 
+                        </ListGroupItem>
+                    );
+                })}
+            </ListGroup>
+            <CommentForm dishId={dishId} addComment={addComment} />
+        </div>
         ) : (
             <div>No Comments</div>
         )
@@ -208,8 +220,11 @@ const RenderComments = ({comments}) => {
 
 export const DishdetailComponent = ({ 
     dish, 
-    comments 
+    comments,
+    addComment
 }) => {
+
+    console.log(addComment);
 
     return (
         <React.Fragment>
@@ -234,14 +249,12 @@ export const DishdetailComponent = ({
             <div className="row">
                 <div className="col-12 col-md-5 m-1">
                     <RenderDish dish={dish} />
-                </div>
-                <div className="col-12 col-md-5 m-1">
-                    <h4>Comments</h4>
-                    <ListGroup as="li" className="list-unstyled">
-                        <RenderComments comments={comments} />
-                    </ListGroup>
-                    <CommentForm />
-                </div>
+                </div>                    
+                    <RenderComments 
+                        comments={comments} 
+                        addComment={addComment}
+                        dishId={dish.id}    
+                    />
             </div>
         </React.Fragment>
     )
