@@ -20,6 +20,7 @@ import {
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from './LoadingComponent';
 
 /**
  * Handle form custom hook.
@@ -28,6 +29,7 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
  */
 const useFormHandle = (dishId, addComment) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [ratingValue] = useState(1);
 
     const toggleModal = () => {
         setIsModalOpen(setIsModalOpen => !setIsModalOpen);
@@ -35,13 +37,9 @@ const useFormHandle = (dishId, addComment) => {
 
     // @todo check why is not working.
     const handleComment = (values) => {
+        let rating = typeof values.rating !== 'undefined' ? values.rating : ratingValue
         setIsModalOpen(setIsModalOpen => !setIsModalOpen);
-
-        console.log('values.rating :>> ', values.rating);
-        console.log('values.author :>> ', values.author);
-        console.log('values.comment :>> ', values.comment);
-
-        addComment(dishId, values.rating, values.author, values.comment)
+        addComment(dishId, rating, values.author, values.comment)
     }
 
     const required = (val) => {
@@ -82,7 +80,6 @@ export default function CommentForm({
         handleComment 
     } = useFormHandle(dishId, addComment);
 
-
     return (
         <div>
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
@@ -100,6 +97,7 @@ export default function CommentForm({
                                     model=".rating" 
                                     name="rating"
                                     className="form-control"
+                                    placeholder="Rating"
                                 >
                                     <option>1</option>
                                     <option>2</option>
@@ -112,16 +110,16 @@ export default function CommentForm({
                         </Row>
                         <Row>
                             <Col>
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="author">Name</Label>
                             </Col>
                         </Row>
                         <Row className="form-group">
                             <Col>
                                 <Control.text
-                                    model=".name"
+                                    model=".author"
                                     className="form-control"
-                                    name="name" 
-                                    placeholder="Name"
+                                    name="author" 
+                                    placeholder="Author"
                                     validators={{ 
                                         required, 
                                         minLength: minLength(3), 
@@ -130,7 +128,7 @@ export default function CommentForm({
                                 />
                                 <Errors 
                                     className="text-danger" 
-                                    model=".name" 
+                                    model=".author" 
                                     show="touched" 
                                     messages={{
                                         required: 'Required: ',
@@ -148,8 +146,8 @@ export default function CommentForm({
                         <Row className="form-group">
                             <Col>
                                 <Control.textarea 
-                                    model=".message" 
-                                    name="message" 
+                                    model=".comment" 
+                                    name="comment" 
                                     rows="12" 
                                     className="form-control"
                                 />
@@ -201,12 +199,18 @@ const RenderComments = ({comments, addComment, dishId}) => {
             <h4>Comments</h4>
             <ListGroup as="li" className="list-unstyled">
                 {comments.map(dishComment => {
+                    let {id, comment, author, date} = dishComment;
+
+                    console.log(id, comment, author, date);
+
                     return (
-                        <ListGroupItem className="borderless"
-                            key={dishComment.key}>
-                            <p>{dishComment.comment}</p>
-                            <p>-- {dishComment.author}, {formatDate(dishComment.date)}</p> 
-                        </ListGroupItem>
+                        <div>
+                            <ListGroupItem className="borderless"
+                                key={id}>
+                                <p>{comment}</p>
+                                <p>-- {author}, {formatDate(date)}</p>
+                            </ListGroupItem>
+                        </div>
                     );
                 })}
             </ListGroup>
@@ -221,41 +225,63 @@ const RenderComments = ({comments, addComment, dishId}) => {
 export const DishdetailComponent = ({ 
     dish, 
     comments,
-    addComment
+    addComment,
+    isLoading,
+    errorMessage
 }) => {
 
-    console.log(addComment);
+    console.log(dish);
+    console.log(isLoading)
 
-    return (
-        <React.Fragment>
-            <div className="row">
-                <Breadcrumb>
-                    <BreadcrumbItem>
-                        <Link to="/menu">
-                            menu
-                        </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem active>
-                        {dish ? dish.name : ''}
-                    </BreadcrumbItem>
-                </Breadcrumb>
-                <div className="col-12 border-bottom">
-                    {dish ? 
-                        <h3>{dish.name}</h3> : 
-                        <h3>No Dish Name</h3>
-                    }
+    if (isLoading) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Loading />
                 </div>
             </div>
-            <div className="row">
-                <div className="col-12 col-md-5 m-1">
-                    <RenderDish dish={dish} />
-                </div>                    
-                    <RenderComments 
-                        comments={comments} 
-                        addComment={addComment}
-                        dishId={dish.id}    
-                    />
+        )
+    } else if(errorMessage) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <h4>{errorMessage}</h4>
+                </div>
             </div>
-        </React.Fragment>
-    )
+        )
+    }
+    else if (dish !== null) {
+        return (
+            <React.Fragment>
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem>
+                            <Link to="/menu">
+                                menu
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem active>
+                            {dish ? dish.name : ''}
+                        </BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="col-12 border-bottom">
+                        {dish ? 
+                            <h3>{dish.name}</h3> : 
+                            <h3>No Dish Name</h3>
+                        }
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderDish dish={dish} />
+                    </div>                    
+                        <RenderComments 
+                            comments={comments} 
+                            addComment={addComment}
+                            dishId={dish.id}    
+                        />
+                </div>
+            </React.Fragment>
+        )
+    }
 }

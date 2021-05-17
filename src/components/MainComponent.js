@@ -9,8 +9,7 @@ import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addComment } from '../redux/ActionCreator';
-
+import { addComment, fetchDishes, dishesLoading } from '../redux/ActionCreator';
 
 const mapStateToProps = state => {
     return {
@@ -22,7 +21,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment))
+    addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
+    fetchDishes: () => {dispatch(fetchDishes())}
 })
 
 /**
@@ -39,16 +39,20 @@ const MainComponent = ({
     comments,
     leaders,
     promotions,
-    addComment
+    addComment,
+    fetchDishes
 }) => {
+
     useEffect(() => {
-        console.log('render the useEffect hook');
+        fetchDishes();
     }, []);
 
     const HomePage = () => {
         return (
             <Home 
-                dish={dishes.filter(dish => dish.featured)[0]} 
+                dish={dishes.dishes.filter(dish => dish.featured)[0]}
+                dishesLoading={dishes.isLoading}
+                dishErrorMessage= {dishes.errorMessage}
                 promotion={promotions.filter(promotion => promotion.featured)[0]}
                 leader={leaders.filter(leader => leader.featured)[0]}
             />
@@ -56,17 +60,15 @@ const MainComponent = ({
     }
 
     const dishWithId = ({match}) => {
-
-        console.log('comments :>> ', comments);
-        console.log('match.params.dishId :>> ', match.params.dishId);
         return  (
         <DishdetailComponent 
-            dish={dishes.filter(dish => dish.id === parseInt(match.params.dishId, 10))[0]} 
+            dish={dishes.dishes.filter(dish => dish.id === parseInt(match.params.dishId, 10))[0]}
+            isLoading={dishes.isLoading}
+            errorMessage= {dishes.errorMessage}
             comments={comments.filter(comment => comment.dishId === parseInt(match.params.dishId, 10))}
             addComment={addComment}
         />)
     }
-    
 
     return (
         <>
