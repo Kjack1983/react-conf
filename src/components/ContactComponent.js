@@ -2,14 +2,14 @@
 import React, { useState } from 'react'
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row } from 'reactstrap'
 import {Link} from 'react-router-dom';
-import {Control, LocalForm, Errors } from 'react-redux-form';
+import {Control, Form, Errors, actions } from 'react-redux-form';
 
 /**
  * Custom form hook to handle form values.
  * @param {function} callback,
  * @return {object} 
  */
-const useFormValue = callback => {
+const useFormValue = (resetFeedbackFrom = null) => {
     const [inputs, setInputs] = useState({
         firstname: '',
         lastname: '',
@@ -36,6 +36,8 @@ const useFormValue = callback => {
         if (typeof callback === 'function') {
             callback();
         }
+
+        resetFeedbackFrom()
     }
     const required = (val) => {
         return val && val.length;
@@ -62,18 +64,9 @@ const useFormValue = callback => {
 }
 
 
-export default function ContactComponent (props) {
+export default function ContactComponent ({resetFeedbackFrom}) {
 
-    /**
-     * Alert fields.
-     */
-    const displayForm = () => {
-        /* alert(`User Created!
-               Name: ${inputs.firstname} ${inputs.lastname}
-               Email: ${inputs.email}`); */
-      }
-
-    let { errors, required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(displayForm);
+    let { errors, required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(resetFeedbackFrom);
 
     return (
         <div className="container">
@@ -123,7 +116,7 @@ export default function ContactComponent (props) {
                     <h3>Send us your feedback</h3>
                 </div>
                 <div className="col-12 col-md-9">
-                    <LocalForm onSubmit={(values) => handleSubmit(values)}>
+                    <Form model="feedback" onSubmit={(values) => handleSubmit(values)}>
                         <Row className="form-group">
                             <Label htmlFor="firstname" md={2}>First Name:</Label>
                             <Col md={9}>
@@ -271,7 +264,7 @@ export default function ContactComponent (props) {
                                 </Button>
                             </Col>
                         </Row>
-                    </LocalForm>
+                    </Form>
                 </div>
             </div>
         </div>
