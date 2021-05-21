@@ -18,9 +18,17 @@ export const fetchDishes = () => (dispatch) => {
     dispatch(dishesLoading(true));
     
     return fetch(`${baseUrl}dishes`)
+        .then(response => {
+            if(response.ok) return response;
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        },
+        // if no response from the server.
+        error => {
+            throw new Error(error.message);
+        })
         .then(response => response.json())
         .then(dishes => dispatch(addDishes(dishes)))
-        .catch(error => console.log)
+        .catch(error => dispatch(dishesFailed(error.message)))
 }
 
 export const dishesLoading = () => ({
@@ -35,6 +43,11 @@ export const dishesFailed = (errorMessage) => ({
     type: ActionTypes.DISHES_FAILED,
     payload: errorMessage
 }) 
+
+export const commentsFailed = (errorMessage) => ({
+    type: ActionTypes.COMMENTS_FAILED,
+    payload: errorMessage
+})
 
 export const promosFailed = (errorMessage) => ({
     type: ActionTypes.PROMOS_FAILED,
@@ -56,9 +69,13 @@ export const fetchComments = () => (dispatch) => {
     dispatch(dishesLoading(true));
     
     return fetch(`${baseUrl}comments`)
+        .then(response => {
+            if(response.ok) return response;
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        })
         .then(response => response.json())
         .then(comments => dispatch(addComments(comments)))
-        .catch(error => console.log)
+        .catch(error => dispatch(commentsFailed(error.message)))
 }
 
 export const addComments = (comments) => ({
@@ -70,7 +87,11 @@ export const fetchPromos = () => (dispatch) => {
     dispatch(promosLoading(true));
     
     return fetch(`${baseUrl}promotions`)
+        .then(response => {
+            if(response.ok) return response;
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        })
         .then(response => response.json())
         .then(promos => dispatch(addPromos(promos)))
-        .catch(error => console.log)
+        .catch(error => dispatch(promosFailed(error.message)))
 }
