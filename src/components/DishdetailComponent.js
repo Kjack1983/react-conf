@@ -21,6 +21,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
+import { baseUrl } from '../shared/baseUrl';
 
 /**
  * Handle form custom hook.
@@ -177,7 +178,7 @@ export default function CommentForm({
 const RenderDish = ({dish}) => {
     return dish ? (
             <Card key={dish.key}>
-                <CardImg top src={dish.image} alt={dish.name} />
+                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
                 <CardBody>
                     <CardTitle>{dish.name}</CardTitle>
                     <CardText>{dish.description}</CardText>
@@ -229,9 +230,6 @@ export const DishdetailComponent = ({
     isLoading,
     errorMessage
 }) => {
-
-    console.log(dish);
-    console.log(isLoading)
 
     if (isLoading) {
         return (

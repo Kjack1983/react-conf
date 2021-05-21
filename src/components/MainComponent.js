@@ -9,7 +9,7 @@ import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addComment, fetchDishes, dishesLoading } from '../redux/ActionCreator';
+import { addComment, fetchDishes, fetchComments, fetchPromos, dishesLoading } from '../redux/ActionCreator';
 import { actions } from 'react-redux-form';
 
 const mapStateToProps = state => {
@@ -24,7 +24,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => ({
     addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
     fetchDishes: () => {dispatch(fetchDishes())},
-    resetFeedbackFrom: () => {dispatch(actions.reset('feedback'))}
+    resetFeedbackFrom: () => {dispatch(actions.reset('feedback'))},
+    fetchComments: () => {dispatch(fetchComments())},
+    fetchPromos: () => {dispatch(fetchPromos())},
 })
 
 /**
@@ -43,11 +45,15 @@ const MainComponent = ({
     promotions,
     addComment,
     fetchDishes,
+    fetchComments,
+    fetchPromos,
     resetFeedbackFrom
 }) => {
 
     useEffect(() => {
         fetchDishes();
+        fetchComments();
+        fetchPromos();
     }, []);
 
     const HomePage = () => {
@@ -56,7 +62,9 @@ const MainComponent = ({
                 dish={dishes.dishes.filter(dish => dish.featured)[0]}
                 dishesLoading={dishes.isLoading}
                 dishErrorMessage= {dishes.errorMessage}
-                promotion={promotions.filter(promotion => promotion.featured)[0]}
+                promotion={promotions.promotions.filter(promotion => promotion.featured)[0]}
+                promosLoading={promotions.isLoading}
+                promosErrorMessage={promotions.errorMessage}
                 leader={leaders.filter(leader => leader.featured)[0]}
             />
         )
@@ -68,7 +76,8 @@ const MainComponent = ({
             dish={dishes.dishes.filter(dish => dish.id === parseInt(match.params.dishId, 10))[0]}
             isLoading={dishes.isLoading}
             errorMessage= {dishes.errorMessage}
-            comments={comments.filter(comment => comment.dishId === parseInt(match.params.dishId, 10))}
+            comments={comments.comments.filter(comment => comment.dishId === parseInt(match.params.dishId, 10))}
+            commentsErrorMessage={comments.errorMessage}
             addComment={addComment}
         />)
     }

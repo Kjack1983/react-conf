@@ -1,4 +1,4 @@
-import { DISHES, COMMENTS, PROMOTIONS, LEADERS } from '../shared/data';
+import { LEADERS } from '../shared/data';
 import * as ActionTypes from './ActionTypes';
 
 
@@ -37,16 +37,34 @@ export const Dishes = (state = {
     }
 }
 
-export const Comments = (state = COMMENTS, action) => {
+export const Comments = (state = {
+    isLoading: true,
+    errorMessage: null,
+    comments: []
+}, action) => {
     
     let { type, payload } = action;
 
     switch (type) {
+        case ActionTypes.ADD_COMMENTS:
+            return {
+                ...state,
+                isLoading: false,
+                errorMessage: null,
+                comments: payload
+            }
+        case ActionTypes.DISHES_FAILED:
+            return {
+                ...state, 
+                isLoading: false,
+                errorMessage: payload,
+                comments: []
+            }
         case ActionTypes.ADD_COMMENT:
             let { dishId, rating, author, comment } = payload;
 
             let formComment = {
-                id: state.length,
+                id: state.comments.length,
                 dishId,
                 rating: parseInt(rating),
                 comment,
@@ -54,20 +72,45 @@ export const Comments = (state = COMMENTS, action) => {
                 date: new Date().toISOString()
             }
 
-            return [
+            return {
                 ...state,
-                formComment
-            ]
+                comments: state.comments.concat(formComment)
+            };
         default:
             return state;
     }
 }
 
-export const Promotions = (state = PROMOTIONS, action) => {
+export const Promotions = (state = {
+    isLoading: true,
+    errorMessage: null,
+    promotions: []
+}, action) => {
     
-    let { type } = action;
+    let { type, payload } = action;
 
     switch (type) {
+        case ActionTypes.ADD_PROMOS:
+            return {
+                ...state, 
+                isLoading: false,
+                errorMessage: null,
+                promotions: payload
+            }
+        case ActionTypes.PROMOS_LOADING:
+            return {
+                ...state, 
+                isLoading: true,
+                errorMessage: null,
+                promotions: []
+            }
+        case ActionTypes.PROMOS_FAILED:
+            return {
+                ...state, 
+                isLoading: false,
+                errorMessage: payload,
+                promotions: []
+            }
         default:
             return state;
     }
