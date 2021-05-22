@@ -28,7 +28,7 @@ import { baseUrl } from '../shared/baseUrl';
  * 
  * @param {function} callback 
  */
-const useFormHandle = (dishId, addComment) => {
+const useFormHandle = (dishId, postComment) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [ratingValue] = useState(1);
 
@@ -40,7 +40,7 @@ const useFormHandle = (dishId, addComment) => {
     const handleComment = (values) => {
         let rating = typeof values.rating !== 'undefined' ? values.rating : ratingValue
         setIsModalOpen(setIsModalOpen => !setIsModalOpen);
-        addComment(dishId, rating, values.author, values.comment)
+        postComment(dishId, rating, values.author, values.comment)
     }
 
     const required = (val) => {
@@ -69,7 +69,7 @@ const useFormHandle = (dishId, addComment) => {
  */
 export default function CommentForm({
     dishId,
-    addComment
+    postComment
 }) {
 
     let { 
@@ -79,7 +79,7 @@ export default function CommentForm({
         isModalOpen, 
         toggleModal, 
         handleComment 
-    } = useFormHandle(dishId, addComment);
+    } = useFormHandle(dishId, postComment);
 
     return (
         <div>
@@ -189,7 +189,7 @@ const RenderDish = ({dish}) => {
     );
 }
 
-const RenderComments = ({comments, addComment, dishId}) => {
+const RenderComments = ({comments, postComment, dishId}) => {
 
     const formatDate = (date) => {
         return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(date)));
@@ -215,7 +215,7 @@ const RenderComments = ({comments, addComment, dishId}) => {
                     );
                 })}
             </ListGroup>
-            <CommentForm dishId={dishId} addComment={addComment} />
+            <CommentForm dishId={dishId} postComment={postComment} />
         </div>
         ) : (
             <div>No Comments</div>
@@ -226,7 +226,7 @@ const RenderComments = ({comments, addComment, dishId}) => {
 export const DishdetailComponent = ({ 
     dish, 
     comments,
-    addComment,
+    postComment,
     isLoading,
     errorMessage
 }) => {
@@ -275,7 +275,7 @@ export const DishdetailComponent = ({
                     </div>                    
                         <RenderComments 
                             comments={comments} 
-                            addComment={addComment}
+                            postComment={postComment}
                             dishId={dish.id}    
                         />
                 </div>

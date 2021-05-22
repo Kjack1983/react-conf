@@ -61,20 +61,9 @@ export const Comments = (state = {
                 comments: []
             }
         case ActionTypes.ADD_COMMENT:
-            let { dishId, rating, author, comment } = payload;
-
-            let formComment = {
-                id: state.comments.length,
-                dishId,
-                rating: parseInt(rating),
-                comment,
-                author,
-                date: new Date().toISOString()
-            }
-
             return {
                 ...state,
-                comments: state.comments.concat(formComment)
+                comments: state.comments.concat(payload)
             };
         default:
             return state;
