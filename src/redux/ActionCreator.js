@@ -1,6 +1,5 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
-import { feedBack } from './reducers';
 
 export const addComment = (comment) => {
     return {

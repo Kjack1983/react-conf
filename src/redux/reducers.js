@@ -70,10 +70,22 @@ export const Comments = (state = {
     }
 }
 
-export const feedBack = (state = {}, action) => {
+// @todo checkout this part...
+export const feedBack = (state = {
+    feedback: []
+}, action) => {
     let { type, payload } = action;
 
     switch (type) {
+
+        case ActionTypes.ADD_FEEDBACK:
+            state = {
+                ...state,
+                feedback: payload
+            };
+
+            return state;
+
         case ActionTypes.ADD_FORM_FEEDBACK:
             return {
                 ...state,
