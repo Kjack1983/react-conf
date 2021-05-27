@@ -9,24 +9,28 @@ import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { postComment, fetchDishes, fetchComments, fetchPromos, dishesLoading } from '../redux/ActionCreator';
+import { postComment, postFeedback, fetchDishes, fetchFeedback, fetchComments, fetchPromos, dishesLoading, fetchLeaders } from '../redux/ActionCreator';
 import { actions } from 'react-redux-form';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 const mapStateToProps = state => {
     return {
         dishes: state.dishes,
         comments: state.comments,
         leaders: state.leaders,
-        promotions: state.promotions
+        promotions: state.promotions,
     }
 }
 
 const mapDispatchToProps = (dispatch) => ({
     postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+    postFeedback: (feedback) => dispatch(postFeedback(feedback)),
     fetchDishes: () => {dispatch(fetchDishes())},
     resetFeedbackFrom: () => {dispatch(actions.reset('feedback'))},
     fetchComments: () => {dispatch(fetchComments())},
     fetchPromos: () => {dispatch(fetchPromos())},
+    fetchLeaders: () => {dispatch(fetchLeaders())},
+    fetchFeedback: () => {dispatch(fetchFeedback())}
 })
 
 /**
@@ -38,22 +42,29 @@ const useData = (data) => {
     return value;
 }
 
-const MainComponent = ({
-    dishes,
-    comments,
-    leaders,
-    promotions,
-    postComment,
-    fetchDishes,
-    fetchComments,
-    fetchPromos,
-    resetFeedbackFrom
-}) => {
+const MainComponent = (props) => {
+
+    let {
+        dishes,
+        comments,
+        leaders,
+        promotions,
+        postComment,
+        postFeedback,
+        fetchDishes,
+        fetchComments,
+        fetchFeedback,
+        fetchPromos,
+        fetchLeaders,
+        resetFeedbackFrom
+    } = props
 
     useEffect(() => {
         fetchDishes();
         fetchComments();
         fetchPromos();
+        fetchLeaders();
+        fetchFeedback();
     }, []);
 
     const HomePage = () => {
@@ -65,7 +76,9 @@ const MainComponent = ({
                 promotion={promotions.promotions.filter(promotion => promotion.featured)[0]}
                 promosLoading={promotions.isLoading}
                 promosErrorMessage={promotions.errorMessage}
-                leader={leaders.filter(leader => leader.featured)[0]}
+                leader={leaders.leaders.filter(leader => leader.featured)[0]}
+                leadersLoading={leaders.isLoading}
+                leadersErrorMessage={leaders.errorMessage}
             />
         )
     }
@@ -82,21 +95,29 @@ const MainComponent = ({
         />)
     }
 
+    console.log('leaders :>> ', leaders);
+
     return (
         <>
             <Header/>
-            <div className="container">
-                <Switch>
-                    <Route path="/home" component={HomePage} />
-                    <Route path="/aboutus" component={() => <AboutComponent leaders={leaders}/>} />
-                    <Route exact path="/menu" component={(dishId) => <MenuComponent 
-                        dishes={dishes} />} 
-                    />}/>
-                    <Route path="/menu/:dishId" component={dishWithId} />
-                    <Route path="/contactus" component={() => <Contact resetFeedbackFrom={resetFeedbackFrom} />} />
-                    <Redirect to="/home" />
-                </Switch>
-            </div>
+                <TransitionGroup>
+                    <CSSTransition key={props.location.key} classNames="page" timeout={300}>
+                        <div className="container">
+                            <Switch>
+                                <Route path="/home" component={HomePage} />
+                                <Route path="/aboutus" component={() => <AboutComponent 
+                                    leaders={leaders}
+                                />} />
+                                <Route exact path="/menu" component={(dishId) => <MenuComponent 
+                                    dishes={dishes} />} 
+                                />}/>
+                                <Route path="/menu/:dishId" component={dishWithId} />
+                                <Route path="/contactus" component={() => <Contact resetFeedbackFrom={resetFeedbackFrom} postFeedback={postFeedback}/>} />
+                                <Redirect to="/home" />
+                            </Switch>
+                        </div>
+                    </CSSTransition>
+                </TransitionGroup>
             <Footer />
         </>
     )

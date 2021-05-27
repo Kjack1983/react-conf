@@ -1,24 +1,64 @@
 import React from 'react'
 import { Card, CardHeader, CardBody, Media, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import {Loading} from './LoadingComponent';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
 
-const RenderLeader = ({leader}) => {
-    return (
-        <Media tag="li" className="mb-5 mt-2">
-            <Media className="align-self-start mr-5" object src={leader.image} alt={leader.name}/>
-            <Media body>
-            <Media heading>{leader.name}</Media>
-            <p>{leader.designation}</p>
-                {leader.description}
+const RenderLeader = ({leader, isLoading, errorMessage}) => {
+
+    if(isLoading) {
+        return (
+            <Loading />
+        )
+    } else if (errorMessage) {
+        return (
+            <h4>{errorMessage}</h4>
+        )
+    } else {
+
+        return (
+            <Media tag="li" className="mb-5 mt-2">
+                <Media className="align-self-start mr-5" object src={baseUrl+leader.image} alt={leader.name}/>
+                <Media body>
+                <Media heading>{leader.name}</Media>
+                <p>{leader.designation}</p>
+                    {leader.description}
+                </Media>
             </Media>
-        </Media>
-      );
+        );
+    }
 }
 
 export default function AboutComponent({
     leaders
 }) {
-    console.log(leaders);
+
+    let {isLoading, errorMessage, leaders:leaderlist } = leaders;
+
+    const loadLeaders = () => {
+        if (isLoading) {
+            return (
+                <Loading />
+            )
+        } else if (errorMessage) {
+            return (
+                <h4>{errorMessage}</h4>
+            )
+        } else {
+            return (
+                <Media list className="list-unstyled">
+                    {leaderlist.map(leader => 
+                        <RenderLeader 
+                            key={leader.key} 
+                            leader={leader} 
+                            isLoading={isLoading} 
+                            errorMessage={errorMessage} 
+                    />)}
+                </Media>
+            )
+        }
+    }
+
     return (
         <div className="container">
             <div className="row">
@@ -75,7 +115,7 @@ export default function AboutComponent({
                 </div>
                 <div className="col-12">
                     <Media list className="list-unstyled">
-                        {leaders.map(leader => <RenderLeader leader={leader} />)}
+                        {loadLeaders()}
                     </Media>
                 </div>
             </div>

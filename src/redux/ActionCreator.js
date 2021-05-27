@@ -1,12 +1,49 @@
 import * as ActionTypes from './ActionTypes';
-import { DISHES } from '../shared/data';
 import { baseUrl } from '../shared/baseUrl';
+import { feedBack } from './reducers';
 
 export const addComment = (comment) => {
     return {
         type: ActionTypes.ADD_COMMENT,
         payload: comment
     }
+}
+
+export const addFormFeedback = (feedback) => {
+    return {
+        type: ActionTypes.ADD_FORM_FEEDBACK,
+        payload: feedback
+    }
+}
+
+export const postFeedback = (feedback) => (dispatch) => {
+    feedback = {
+        ...feedback,
+        date: new Date().toISOString()
+    }
+
+    return fetch(`${baseUrl}feedback`, {
+        method: 'POST',
+        body: JSON.stringify(feedback),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.ok) return response;
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+    },
+    // if no response from the server.
+    error => {
+        throw new Error(error.message);
+    })
+    .then(response => response.json())
+    .then(response => {
+        return dispatch(addFormFeedback(response))
+    })
+    .catch(error => console.log('Post Feedback', error.message))
+
 }
 
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
@@ -43,6 +80,25 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     .catch(error => console.log('Post Comments', error.message))
 }
 
+
+export const fetchFeedback = () => (dispatch) => {
+    return fetch(`${baseUrl}feedback`)
+        .then(response => {
+            if(response.ok) return response;
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        },
+        // if no response from the server.
+        error => {
+            throw new Error(error.message);
+        })
+        .then(response => response.json())
+        .then(feedback => {
+            console.log('feedback :>> ', feedback);
+            return dispatch(addFeedback(feedback))
+        })
+        .catch(error => dispatch(feedbackFailed(error.message)))
+}
+
 export const fetchDishes = () => (dispatch) => {
     dispatch(dishesLoading(true));
     
@@ -60,6 +116,32 @@ export const fetchDishes = () => (dispatch) => {
         .catch(error => dispatch(dishesFailed(error.message)))
 }
 
+export const fetchLeaders = () => (dispatch) => {
+    dispatch(leadersLoading(true));
+    
+    return fetch(`${baseUrl}leaders`)
+        .then(response => {
+            if(response.ok) return response;
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        },
+        // if no response from the server.
+        error => {
+            throw new Error(error.message);
+        })
+        .then(response => response.json())
+        .then(leaders => dispatch(addLeaders(leaders)))
+        .catch(error => dispatch(leadersFailed(error.message)))
+}
+
+export const leadersLoading = () => ({
+    type: ActionTypes.LEADERS_LOADING
+})
+
+export const addLeaders = (leaders) => ({
+    type:ActionTypes.ADD_LEADERS,
+    payload: leaders
+})
+
 export const dishesLoading = () => ({
     type: ActionTypes.DISHES_LOADING
 })
@@ -68,8 +150,22 @@ export const promosLoading = () => ({
     type: ActionTypes.PROMOS_LOADING
 })
 
+export const leadersFailed = (errorMessage) => ({
+    type: ActionTypes.LEADERS_FAILED,
+    payload: errorMessage
+}) 
+
 export const dishesFailed = (errorMessage) => ({
     type: ActionTypes.DISHES_FAILED,
+    payload: errorMessage
+})
+
+export const feedbackLoading = () => ({
+    type: ActionTypes.FEEDBACK_LOADING
+})
+
+export const feedbackFailed = (errorMessage) => ({
+    type: ActionTypes.FEEDBACK_FAILED,
     payload: errorMessage
 }) 
 
@@ -86,6 +182,11 @@ export const promosFailed = (errorMessage) => ({
 export const addDishes = (dishes) => ({
     type:ActionTypes.ADD_DISHES,
     payload: dishes
+})
+
+export const addFeedback = (feedback) => ({
+    type:ActionTypes.ADD_FEEDBACK,
+    payload: feedback
 })
 
 export const addPromos = (promos) => ({

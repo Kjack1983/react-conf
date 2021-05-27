@@ -53,7 +53,7 @@ export const Comments = (state = {
                 errorMessage: null,
                 comments: payload
             }
-        case ActionTypes.DISHES_FAILED:
+        case ActionTypes.COMMENTS_FAILED:
             return {
                 ...state, 
                 isLoading: false,
@@ -64,6 +64,20 @@ export const Comments = (state = {
             return {
                 ...state,
                 comments: state.comments.concat(payload)
+            };
+        default:
+            return state;
+    }
+}
+
+export const feedBack = (state = {}, action) => {
+    let { type, payload } = action;
+
+    switch (type) {
+        case ActionTypes.ADD_FORM_FEEDBACK:
+            return {
+                ...state,
+                feedback: state.feedback.concat(payload)
             };
         default:
             return state;
@@ -105,11 +119,36 @@ export const Promotions = (state = {
     }
 }
 
-export const Leaders = (state = LEADERS, action) => {
+export const Leaders = (state = {
+    isLoading: true,
+    errorMessage: null,
+    leaders: []
+}, action) => {
     
-    let { type } = action;
+    let { type, payload } = action;
 
     switch (type) {
+        case ActionTypes.ADD_LEADERS:
+            return {
+                ...state, 
+                isLoading: false,
+                errorMessage: null,
+                leaders: payload
+            }
+        case ActionTypes.LEADERS_LOADING:
+            return {
+                ...state, 
+                isLoading: true,
+                errorMessage: null,
+                leaders: []
+            }
+        case ActionTypes.PROMOS_FAILED:
+            return {
+                ...state, 
+                isLoading: false,
+                errorMessage: payload,
+                leaders: []
+            }
         default:
             return state;
     }

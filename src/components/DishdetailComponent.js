@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 /**
  * Handle form custom hook.
@@ -177,6 +178,11 @@ export default function CommentForm({
  */
 const RenderDish = ({dish}) => {
     return dish ? (
+        <FadeTransform in 
+            transFromProps={{ 
+                exitTransform: 'scale(0.5) translateY(-50%)'
+            }}
+        >
             <Card key={dish.key}>
                 <CardImg top src={baseUrl + dish.image} alt={dish.name} />
                 <CardBody>
@@ -184,6 +190,7 @@ const RenderDish = ({dish}) => {
                     <CardText>{dish.description}</CardText>
                 </CardBody>
             </Card>
+        </FadeTransform>
     ) : (
         <div>No dishes selected</div>
     );
@@ -199,21 +206,25 @@ const RenderComments = ({comments, postComment, dishId}) => {
         <div className="col-12 col-md-5 m-1">
             <h4>Comments</h4>
             <ListGroup as="li" className="list-unstyled">
-                {comments.map(dishComment => {
-                    let {id, comment, author, date} = dishComment;
+                <Stagger in>
+                    {comments.map(dishComment => {
+                        let {id, comment, author, date} = dishComment;
 
-                    console.log(id, comment, author, date);
+                        console.log(id, comment, author, date);
 
-                    return (
-                        <div>
-                            <ListGroupItem className="borderless"
-                                key={id}>
-                                <p>{comment}</p>
-                                <p>-- {author}, {formatDate(date)}</p>
-                            </ListGroupItem>
-                        </div>
-                    );
-                })}
+                        return (
+                            <div>
+                                <Fade in>
+                                    <ListGroupItem className="borderless"
+                                        key={id}>
+                                        <p>{comment}</p>
+                                        <p>-- {author}, {formatDate(date)}</p>
+                                    </ListGroupItem>
+                                </Fade>
+                            </div>
+                        );
+                    })}
+                </Stagger>
             </ListGroup>
             <CommentForm dishId={dishId} postComment={postComment} />
         </div>

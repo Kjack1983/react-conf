@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform } from 'react-animation-components';
 
 const RenderCard = ({item, isLoading, errorMessage}) => {
     if(isLoading) {
@@ -21,20 +22,26 @@ const RenderCard = ({item, isLoading, errorMessage}) => {
         )
     } else {
         return (
-            <Card>
-                <CardImg src={baseUrl + item.image} alt={item.name} />
-                <CardBody>
-                    <CardTitle>
-                        {item.name}
-                    </CardTitle>
-                    {item.designation ? 
-                        <CardSubtitle>
-                            {item.designation}
-                        </CardSubtitle> : null
-                    }
-                    <CardText>{item.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform in 
+                transFormProps={{ 
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}
+            >
+                <Card>
+                    <CardImg src={baseUrl + item.image} alt={item.name} />
+                    <CardBody>
+                        <CardTitle>
+                            {item.name}
+                        </CardTitle>
+                        {item.designation ? 
+                            <CardSubtitle>
+                                {item.designation}
+                            </CardSubtitle> : null
+                        }
+                        <CardText>{item.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         )
     }
 }
@@ -46,7 +53,9 @@ export default function HomeComponent ({
     promosLoading,
     promosErrorMessage,
     promotion, 
-    leader
+    leader,
+    leadersLoading,
+    leadersErrorMessage
 }) {
     return (
         <div className="container">
@@ -66,7 +75,11 @@ export default function HomeComponent ({
                     />
                 </div>
                 <div className="col-12 col-md m-1">
-                    <RenderCard item={leader} />
+                    <RenderCard 
+                        item={leader} 
+                        isLoading={leadersLoading}
+                        errorMessage={leadersErrorMessage}
+                    />
                 </div>
             </div>
         </div>

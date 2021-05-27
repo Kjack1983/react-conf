@@ -9,7 +9,7 @@ import {Control, Form, Errors, actions } from 'react-redux-form';
  * @param {function} callback,
  * @return {object} 
  */
-const useFormValue = (resetFeedbackFrom = null) => {
+const useFormValue = (resetFeedbackFrom = null, postFeedback) => {
     const [inputs, setInputs] = useState({
         firstname: '',
         lastname: '',
@@ -37,7 +37,11 @@ const useFormValue = (resetFeedbackFrom = null) => {
             callback();
         }
 
-        resetFeedbackFrom()
+        resetFeedbackFrom();
+
+        if (typeof postFeedback === "function") {
+            postFeedback(values);
+        }
     }
     const required = (val) => {
         return val && val.length;
@@ -64,9 +68,9 @@ const useFormValue = (resetFeedbackFrom = null) => {
 }
 
 
-export default function ContactComponent ({resetFeedbackFrom}) {
+export default function ContactComponent ({resetFeedbackFrom, postFeedback}) {
 
-    let { errors, required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(resetFeedbackFrom);
+    let { errors, required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(resetFeedbackFrom, postFeedback);
 
     return (
         <div className="container">
