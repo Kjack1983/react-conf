@@ -9,7 +9,7 @@ import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { postComment, postFeedback, fetchDishes, fetchFeedback, fetchComments, fetchPromos, dishesLoading, fetchLeaders } from '../redux/ActionCreator';
+import { postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, dishesLoading, fetchLeaders } from '../redux/ActionCreator';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -18,7 +18,7 @@ const mapStateToProps = state => {
         dishes: state.dishes,
         comments: state.comments,
         leaders: state.leaders,
-        promotions: state.promotions,
+        promotions: state.promotions
     }
 }
 
@@ -30,7 +30,6 @@ const mapDispatchToProps = (dispatch) => ({
     fetchComments: () => {dispatch(fetchComments())},
     fetchPromos: () => {dispatch(fetchPromos())},
     fetchLeaders: () => {dispatch(fetchLeaders())},
-    fetchFeedback: () => {dispatch(fetchFeedback())}
 })
 
 /**
@@ -53,7 +52,6 @@ const MainComponent = (props) => {
         postFeedback,
         fetchDishes,
         fetchComments,
-        fetchFeedback,
         fetchPromos,
         fetchLeaders,
         resetFeedbackFrom
@@ -64,7 +62,6 @@ const MainComponent = (props) => {
         fetchComments();
         fetchPromos();
         fetchLeaders();
-        fetchFeedback();
     }, []);
 
     const HomePage = () => {
@@ -94,8 +91,6 @@ const MainComponent = (props) => {
             postComment={postComment}
         />)
     }
-
-    console.log('leaders :>> ', leaders);
 
     return (
         <>

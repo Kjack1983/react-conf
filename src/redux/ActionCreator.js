@@ -39,6 +39,8 @@ export const postFeedback = (feedback) => (dispatch) => {
     })
     .then(response => response.json())
     .then(response => {
+        console.log(JSON.stringify(response))
+        alert(JSON.stringify(response))
         return dispatch(addFormFeedback(response))
     })
     .catch(error => console.log('Post Feedback', error.message))
@@ -77,25 +79,6 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     .then(response => response.json())
     .then(response => dispatch(addComment(response)))
     .catch(error => console.log('Post Comments', error.message))
-}
-
-
-export const fetchFeedback = () => (dispatch) => {
-    return fetch(`${baseUrl}feedback`)
-        .then(response => {
-            if(response.ok) return response;
-            throw new Error(`Error ${response.status}: ${response.statusText}`);
-        },
-        // if no response from the server.
-        error => {
-            throw new Error(error.message);
-        })
-        .then(response => response.json())
-        .then(feedback => {
-            console.log('feedback :>> ', feedback);
-            return dispatch(addFeedback(feedback))
-        })
-        .catch(error => dispatch(feedbackFailed(error.message)))
 }
 
 export const fetchDishes = () => (dispatch) => {
@@ -159,15 +142,6 @@ export const dishesFailed = (errorMessage) => ({
     payload: errorMessage
 })
 
-export const feedbackLoading = () => ({
-    type: ActionTypes.FEEDBACK_LOADING
-})
-
-export const feedbackFailed = (errorMessage) => ({
-    type: ActionTypes.FEEDBACK_FAILED,
-    payload: errorMessage
-}) 
-
 export const commentsFailed = (errorMessage) => ({
     type: ActionTypes.COMMENTS_FAILED,
     payload: errorMessage
@@ -181,11 +155,6 @@ export const promosFailed = (errorMessage) => ({
 export const addDishes = (dishes) => ({
     type:ActionTypes.ADD_DISHES,
     payload: dishes
-})
-
-export const addFeedback = (feedback) => ({
-    type:ActionTypes.ADD_FEEDBACK,
-    payload: feedback
 })
 
 export const addPromos = (promos) => ({

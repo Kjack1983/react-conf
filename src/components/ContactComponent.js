@@ -28,20 +28,15 @@ const useFormValue = (resetFeedbackFrom = null, postFeedback) => {
     })
 
     const handleSubmit = (values, callback = false) => {
-        // Check if the user input values are created.
-        
-        console.log('current state >>' + JSON.stringify(values));
-        alert('current state is:' + JSON.stringify(values));
-        
         if (typeof callback === 'function') {
             callback();
         }
 
-        resetFeedbackFrom();
-
         if (typeof postFeedback === "function") {
             postFeedback(values);
         }
+
+        resetFeedbackFrom();
     }
     const required = (val) => {
         return val && val.length;
