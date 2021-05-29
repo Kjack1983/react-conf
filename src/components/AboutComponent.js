@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody, Media, Breadcrumb, BreadcrumbItem } from 'r
 import {Loading} from './LoadingComponent';
 import { Link } from 'react-router-dom';
 import { baseUrl } from '../shared/baseUrl';
+import { Fade, Stagger } from 'react-animation-components'
 
 const RenderLeader = ({leader, isLoading, errorMessage}) => {
 
@@ -47,13 +48,18 @@ export default function AboutComponent({
         } else {
             return (
                 <Media list className="list-unstyled">
-                    {leaderlist.map(leader => 
-                        <RenderLeader 
-                            key={leader.key} 
-                            leader={leader} 
-                            isLoading={isLoading} 
-                            errorMessage={errorMessage} 
-                    />)}
+                    <Stagger chunk={4} in>
+                        {leaderlist.map(leader => 
+                            <Fade>
+                                <RenderLeader 
+                                    key={leader.key} 
+                                    leader={leader} 
+                                    isLoading={isLoading} 
+                                    errorMessage={errorMessage} 
+                                />
+                            </Fade>
+                        )}
+                    </Stagger>
                 </Media>
             )
         }

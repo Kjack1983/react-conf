@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Home from './HomeComponent';
 import Header from './HeaderComponent';
 import Footer from './footerComponent';
@@ -9,7 +9,7 @@ import { DishdetailComponent } from './DishdetailComponent';
 import AboutComponent from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, dishesLoading, fetchLeaders } from '../redux/ActionCreator';
+import { postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreator';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -31,15 +31,6 @@ const mapDispatchToProps = (dispatch) => ({
     fetchPromos: () => {dispatch(fetchPromos())},
     fetchLeaders: () => {dispatch(fetchLeaders())},
 })
-
-/**
- * Custom hook for previously setting our initial state.
- * @param {object} data 
- */
-const useData = (data) => {
-    const [value, setValue] = useState(data || null);
-    return value;
-}
 
 const MainComponent = (props) => {
 

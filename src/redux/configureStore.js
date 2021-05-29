@@ -3,7 +3,6 @@ import { createForms } from 'react-redux-form';
 import { Dishes, Comments, Promotions, Leaders, feedBack } from '../redux/reducers';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
-import { InitialFeedback } from './forms';
 
 export const ConfigureStore = () => {
     const store = createStore(

@@ -1,4 +1,3 @@
-import { LEADERS } from '../shared/data';
 import * as ActionTypes from './ActionTypes';
 
 

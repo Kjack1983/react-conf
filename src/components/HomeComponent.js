@@ -22,9 +22,13 @@ const RenderCard = ({item, isLoading, errorMessage}) => {
         )
     } else {
         return (
-            <FadeTransform in 
-                transFormProps={{ 
-                    exitTransform: 'scale(0.5) translateY(-50%)'
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'translateY(-100px)'
+                }}
+                fadeProps={{
+                    enterOpacity: 1,
                 }}
             >
                 <Card>

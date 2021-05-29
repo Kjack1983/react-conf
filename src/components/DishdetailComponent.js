@@ -17,7 +17,6 @@ import {
     Col, 
     Row
 } from 'reactstrap';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
@@ -209,9 +208,6 @@ const RenderComments = ({comments, postComment, dishId}) => {
                 <Stagger in>
                     {comments.map(dishComment => {
                         let {id, comment, author, date} = dishComment;
-
-                        console.log(id, comment, author, date);
-
                         return (
                             <div>
                                 <Fade in>

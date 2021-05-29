@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row } from 'reactstrap'
 import {Link} from 'react-router-dom';
-import {Control, Form, Errors, actions } from 'react-redux-form';
+import {Control, Form, Errors } from 'react-redux-form';
 
 /**
  * Custom form hook to handle form values.
@@ -10,17 +10,7 @@ import {Control, Form, Errors, actions } from 'react-redux-form';
  * @return {object} 
  */
 const useFormValue = (resetFeedbackFrom = null, postFeedback) => {
-    const [inputs, setInputs] = useState({
-        firstname: '',
-        lastname: '',
-        telnum: '',
-        email: '',
-        agree: false,
-        contactType: 'Tel.',
-        message: ''
-    });
-
-    const [errors, setErrors] = useState({
+    const [errors] = useState({
         firstname: false,
         lastname: false,
         telnum: false,
@@ -65,7 +55,7 @@ const useFormValue = (resetFeedbackFrom = null, postFeedback) => {
 
 export default function ContactComponent ({resetFeedbackFrom, postFeedback}) {
 
-    let { errors, required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(resetFeedbackFrom, postFeedback);
+    let { required, minLength, maxLength, isNumber, validEmail, handleSubmit } = useFormValue(resetFeedbackFrom, postFeedback);
 
     return (
         <div className="container">
