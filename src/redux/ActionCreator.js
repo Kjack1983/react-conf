@@ -15,35 +15,32 @@ export const addFormFeedback = (feedback) => {
     }
 }
 
-export const postFeedback = (feedback) => (dispatch) => {
+
+export const postFeedback = (feedback) => async (dispatch) => {
     feedback = {
         ...feedback,
         date: new Date().toISOString()
     }
 
-    return fetch(`${baseUrl}feedback`, {
-        method: 'POST',
-        body: JSON.stringify(feedback),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if(response.ok) return response;
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    },
-    // if no response from the server.
-    error => {
-        throw new Error(error.message);
-    })
-    .then(response => response.json())
-    .then(response => {
-        alert('Thank you for your feedback\n' + JSON.stringify(response))
-        return dispatch(addFormFeedback(response))
-    })
-    .catch(error => console.log('Post Feedback', error.message))
+    try {
+        let response = await fetch(`${baseUrl}feedback`, {
+            method: 'POST',
+            body: JSON.stringify(feedback),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        });
 
+        if (response.ok) {
+            let comment = await response.json();
+            dispatch(addFormFeedback(comment));
+        } else {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+    } catch (error) {
+        console.log('Post Feedback', error.message)
+    }
 }
 
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {

@@ -75,7 +75,7 @@ export const feedBack = (state = {
 
     switch (type) {
         case ActionTypes.ADD_FORM_FEEDBACK:
-            return state.concat(payload);
+            return state.forms.$form.initialValue.feedback.concat(payload);
         default:
             return state;
     }

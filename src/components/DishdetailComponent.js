@@ -205,11 +205,10 @@ const RenderComments = ({comments, postComment, dishId}) => {
         <div className="col-12 col-md-5 m-1">
             <h4>Comments</h4>
             <ListGroup as="li" className="list-unstyled">
-                <Stagger in>
+                <Stagger chunk={4} in>
                     {comments.map(dishComment => {
                         let {id, comment, author, date} = dishComment;
                         return (
-                            <div>
                                 <Fade in>
                                     <ListGroupItem className="borderless"
                                         key={id}>
@@ -217,7 +216,6 @@ const RenderComments = ({comments, postComment, dishId}) => {
                                         <p>-- {author}, {formatDate(date)}</p>
                                     </ListGroupItem>
                                 </Fade>
-                            </div>
                         );
                     })}
                 </Stagger>
